@@ -1,23 +1,35 @@
-
-import React, {useEffect, useState}from "react";
-import './../styles/App.css';
+import React, { useEffect, useState } from 'react'
 
 const App = () => {
-  const [data,setData]= useState(null)
+  const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
 
-  useEffect(()=> {
-    const fetchData= async () =>{
-      const responce = await fetch('https://dummyjson.com/products')
-      const result = await responce.json()
+  useEffect(() => {
+    fetch('https://dummyjson.com/products')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error fetching data')
+        }
 
-      setData(result)
-    }
-    fetchData()
+        return response.json()
+      })
+      .then((result) => {
+        setData(result)
+      })
+      .catch(() => {
+        setError('Error fetching data')
+      })
   }, [])
+
   return (
     <div id="main">
-        {/* Do not remove the main div */}
-        <pre>{JSON.stringify(data,null,2)}</pre>
+      {error ? (
+        <p>{error}</p>
+      ) : data ? (
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      ) : (
+        <p>No data found</p>
+      )}
     </div>
   )
 }
