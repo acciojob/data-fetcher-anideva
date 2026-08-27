@@ -9,7 +9,7 @@ const App = () => {
     fetch('https://dummyjson.com/products')
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Error fetching data')
+          throw new Error('Failed to fetch data')
         }
 
         return response.json()
@@ -18,8 +18,8 @@ const App = () => {
         setData(result)
         setLoading(false)
       })
-      .catch(() => {
-        setError('Error fetching data')
+      .catch((err) => {
+        setError(err.message)
         setLoading(false)
       })
   }, [])
@@ -29,11 +29,14 @@ const App = () => {
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
-        <p>{error}</p>
-      ) : !data || data.products.length === 0 ? (
-        <p>No data found</p>
+        <p>An error occurred: {error}</p>
+      ) : data ? (
+        <>
+          <p>Data Fetched from API</p>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </>
       ) : (
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <p>No data found</p>
       )}
     </div>
   )
